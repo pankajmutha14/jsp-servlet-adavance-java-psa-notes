@@ -1,0 +1,90 @@
+#########################
+1. HTML
+2. Servlets(Core Java)
+3. JDBC(Core Java)
+
+Using Above we will learn how to perform CRUD Operations
+
+Requirement
+-> Core java
+-> Eclipse for java ee
+-------------------------------------------------------------
+Step 1: Install Tomcat
+-> Tomcat is a application server
+-> Application server is responsible to run Servlet, JSP etc
+
+a. Go to Official Website of Tomcat: https://tomcat.apache.org/download-90.cgi
+b. Click on tomcat 10 link
+c. Under Binary Distribution>>Download Zip file: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.40/bin/apache-tomcat-10.1.40.zip
+d. Copy the download the ZIP file and paste that into newly created folder tomcat-10 (G: or D:)
+e. Open eclipse and go to server tab>>Click on the link no servers are available>>Go to Apache >> Click on tomcat 10.1>.Click on next button>>Browse and select tomcat path till you see bin(Exclude bin folder)
+Example: G:\tomcat - 10\apache-tomcat-10.1.40
+f. Under JRE Select 21
+g. Click on finish
+
+Steps to Delete Tomcat
+#######################
+Step 1: Stop tomcat from server tab
+Step 2: Right click on tomcat entry in server tab and select delete option
+Step 3: After Deleting again click on No Servers are available link present inside server tab
+Step 4: Go to server tab>>Click on the link no servers are available>>Go to Apache >> Click on tomcat 10.1
+Step 5: Click on Configure run time environments
+Step 6: Select tomcat entry and click on remove button
+Step 7: Click on apply and close
+Step 8: Click on cancel button
+
+##############################
+Create First HTML page
+##############################
+Step 1 : Create Dynamic web project
+Go to File>>New >> Other>> type dynamic web project>>Click on next button
+Step 2: Give your project a name: web_app_1
+Step 3: Select dynamic web module version(5 or 6 or 4) depending on your laptop OS + Hardware
+Step 4: Click on finish
+Step 5: go to web_app_1>>src>>webapp or webcontent>>create index.html page>>Click on finish
+
+Explanation:
+a. <!DOCTYPE html>: Declares the document type and version of HTML being used. <!DOCTYPE html> indicates that this is an HTML5 document.
+b. <html>.....</html>: The root element of the HTML document. All content must be inside this tag.
+c. 
+<head>
+<meta charset="UTF-8">
+<title>registration</title>----> Here we give page title
+</head>
+d. 
+<body>......</body>---> The <body> element contains all the content that is visible on the web page, such as text, images, links, etc. Currently, it's empty.
+
+Example:
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+	</head>
+	
+	<body>
+	
+	</body>
+</html>
+--------------------------------
+index.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
