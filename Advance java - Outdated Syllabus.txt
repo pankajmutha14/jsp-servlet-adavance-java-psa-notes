@@ -70,9 +70,112 @@ Example:
 --------------------------------
 index.html
 
+Example 2:
+---------
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Registration</title>
+	</head>
+	
+	<body>
+		<h2>Registration Page</h2>
+		<table>
+			<tr>
+				<td>Name</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td>Mobile</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="save" /></td>
+			</tr>
+		</table>
+	</body>
+</html>
 
+index.html
+---------------------------------------------------------------------------
+Example 3: Make html page interact with backend java code
 
+What are servlets?
+--------------------
+-> These are java class that extends HttpServlet
+-> Servlets can read data from fronent technologies like html, jsp etc
+-> Servlet can write data back to html, jsp etc
 
+index.html
+----------
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Registration</title>
+	</head>
+	
+	<body>
+		<h2>Registration Page</h2>
+		<form	action="saveReg" method="post">
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><input type="text" /></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" /></td>
+				</tr>
+				<tr>
+					<td>Mobile</td>
+					<td><input type="text" /></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="save" /></td>
+				</tr>
+			</table>
+		
+		</form>
+		
+	</body>
+	
+		
+</html>
+
+RegistrationServlet.java
+-------------------------
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/saveReg")
+public class RegistrationServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public RegistrationServlet() {
+        super();
+    }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("get");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("post");
+	}
+
+}
+---------------------------------------------------------------------
 
 
 
