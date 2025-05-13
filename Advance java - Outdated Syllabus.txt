@@ -178,9 +178,160 @@ public class RegistrationServlet extends HttpServlet {
 ---------------------------------------------------------------------
 
 
+Example 4: Servlet should read form data
+-----------------------------------------
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Registration</title>
+	</head>
+	
+	<body>
+		<h2>Registration Page</h2>
+		<form	action="saveReg" method="post">
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><input type="text" name="name"/></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" name="emailId"/></td>
+				</tr>
+				<tr>
+					<td>Mobile</td>
+					<td><input type="text" name="mobile"/></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="save" /></td>
+				</tr>
+			</table>
+		
+		</form>
+		
+	</body>
+	
+		
+</html>
+index.html
+----------------------------------------------------------
+package p1;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
+@WebServlet("/saveReg")
+public class RegistrationServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public RegistrationServlet() {
+        super();
+    }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("get");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String name = request.getParameter("name");
+		String email = request.getParameter("emailId");
+		String mobile = request.getParameter("mobile");
+		System.out.println(name);
+		System.out.println(email);
+		System.out.println(mobile);
+	}
 
+}
+
+RegistrationServlet.java
+--------------------------------------------------------------------------------
+
+Example 5: Save Data into database using servlets after reading form data
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Registration</title>
+	</head>
+	
+	<body>
+		<h2>Registration Page</h2>
+		<form	action="saveReg" method="post">
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><input type="text" name="name"/></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" name="emailId"/></td>
+				</tr>
+				<tr>
+					<td>Mobile</td>
+					<td><input type="text" name="mobile"/></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="save" /></td>
+				</tr>
+			</table>
+		
+		</form>
+		
+	</body>
+	
+		
+</html>
+index.html
+-------------------------------------------------------------
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+@WebServlet("/saveReg")
+public class RegistrationServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public RegistrationServlet() {
+        super();
+    }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("get");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String name = request.getParameter("name");
+		String email = request.getParameter("emailId");
+		String mobile = request.getParameter("mobile");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/psadb","root","test");
+			
+			Statement stmnt = con.createStatement();
+			stmnt.executeUpdate("insert into student values('"+name+"','"+email+"','"+mobile+"')");
+		
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+
+RegistrationServlet.java
+---------------------------------------------------------------------------------------------------
 
 
 
