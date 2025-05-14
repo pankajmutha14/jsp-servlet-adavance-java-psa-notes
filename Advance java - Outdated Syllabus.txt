@@ -333,6 +333,231 @@ public class RegistrationServlet extends HttpServlet {
 RegistrationServlet.java
 ---------------------------------------------------------------------------------------------------
 
+Example 6 - Delete Data from Database
+########################################
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Delete Registration</title>
+	</head>
+	
+	<body>
+		<h2>Delete Registration Page</h2>
+		<form	action="deleteReg" method="post">
+			<table>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" name="emailId"/></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="delete" /></td>
+				</tr>
+			</table>
+		
+		</form>
+		
+	</body>
+	
+		
+</html>
+delete_registration.html
+-------------------------------------------------------------------------
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+@WebServlet("/deleteReg")
+public class DeleteRegistrationServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public DeleteRegistrationServlet() {
+        super();
+    }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("get");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String email = request.getParameter("emailId");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/psadb","root","test");
+			
+			Statement stmnt = con.createStatement();
+			stmnt.executeUpdate("Delete From student where email='"+email+"'");
+		
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+DeleteRegistration.java
+---------------------------------------------------------------------------
+
+Example 7- Update Record
+------------------------
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>update Registration</title>
+	</head>
+	
+	<body>
+		<h2>Update Registration Page</h2>
+		<form	action="updateReg" method="post">
+			<table>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" name="emailId"/></td>
+				</tr>
+				<tr>
+					<td>Mobile</td>
+					<td><input type="text" name="mobile"/></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="update" /></td>
+				</tr>
+			</table>
+		
+		</form>
+		
+	</body>
+	
+		
+</html>
+update_registration.html
+---------------------------------------------------------------------------------
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+@WebServlet("/updateReg")
+public class UpdateRegistrationServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public UpdateRegistrationServlet() {
+        super();
+    }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("get");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String email = request.getParameter("emailId");
+		String mobile = request.getParameter("mobile");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/psadb","root","test");
+			
+			Statement stmnt = con.createStatement();
+			stmnt.executeUpdate("update student set mobile='"+mobile+"' where email='"+email+"'");
+		
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+UpdateRegistrationServlet.java
+-------------------------------------------------------------------------------------------------
+
+Example 8:Running directly servlet
+------------------------------------------------
+
+Note: When we run a servlet , get method of servlet will get executed
+--------------------------------------------------------------------
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/readReg")
+public class ReadRegistration extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public ReadRegistration() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Get");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("post");
+	}
+
+}
+Output: Get
+
+Example 9:Write data from servlet to html
+-----------------------------------------
+
+Note: 
+-> use repsonse.getWriter() for writing data to html
+PrintWriter out = repsonse.getWriter(); //------> Will give out reference using which we can write content to html
+
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@WebServlet("/readReg")
+public class ReadRegistration extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public ReadRegistration() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		PrintWriter out = response.getWriter();
+		out.println("hello");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("post");
+	}
+
+}
+
+Example 9: Read data from database and display that as a table in html
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
