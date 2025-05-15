@@ -618,15 +618,148 @@ public class ReadRegistration extends HttpServlet {
 
 }
 
+#########################
+JSP - Java Server Pages
+#########################
+-> JSP helps us to add partial java code inside html
+-> This will make development easy
+
+JSP Tags
+--------------
+a. scriptlet tag
+-> <%    %> tag is used to add java code insie html
+
+Example 1:
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<%
+		for(int i=0;i<5;i++){
+			System.out.println(i);
+		}
+	%>
+</body>
+</html>
+
+registration_page.jsp
+--------------------------------------------------------------------------------------
+-> Scriptlet tag has built in implicit object like out, request, response, session
+
+Example 2:
+----------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<%
+		for(int i=0;i<5;i++){
+			out.println(i);
+		}
+	%>
+</body>
+</html>
+
+registration_page.jsp
+-------------------------------------------------------------------------------------------
+-> We cannot use access specifier inside scriptlet tag
+Example: 3
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<%
+		public int x;//--->Error
+		public void test(){//--->Error
+			
+		}
+	%>
+</body>
+</html>
+
+-----------------------------------------------------------------------------------------
+-> Inside scriptlet tag we cannot create static / non static variables
+-> We cannot create methods inside script let tag
+-> Only loca variable can be created inside scriptlet
+Example 4:
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<%
+		int x=10;//------>Local Variable
+		out.println(x);
+		
+	%>
+</body>
+</html>
+
+------------------------------------------------------------------------------------
+Note: We cannot write html code inside scriptlet tag
+
+--------------------------------------------------------------------------------------------
+
+2. Declaration tag
+----------------------------
+-> To create declaration tag we use <%!  %>
+-> To create static/non static vartiable we use declaration tag
+-> To create methods we use declaration tag
+-> We donot have implicit objects inside declaration (out, request, response, session etc)
+-> We cannot wite html code inside declaration tag
 
 
+Example 1:
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
 
-
-
-
-
-
-
+	<%!
+		public static int y=100;
+		public int x=10;//------>Non-satic Variable
+		public String test(){
+			return "hello";
+		}
+		
+	%>
+	
+	<%
+		out.println(y);
+		out.println(x);
+		out.println(test());
+	%>
+	
+</body>
+</html>
 
 
 
