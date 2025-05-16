@@ -917,6 +917,13 @@ Step 3: Develop and import menu.html content to list_registration.html
 </body>
 </html>
 
+##################################
+Inter servlet Commuication
+##################################
+
+-> Calling one servlet from another servlet is called as interservlet communication
+-> Using interservlet communication we can also call from a servlet a jsp page
+-> project flow to be built based on business scenario we use ISC
 
 
 
