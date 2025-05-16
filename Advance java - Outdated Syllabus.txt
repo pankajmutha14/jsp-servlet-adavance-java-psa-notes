@@ -761,11 +761,161 @@ Example 1:
 </body>
 </html>
 
+c. Expression tag
+-----------------
+-> <%= %>
+-> Evaluates an expression and prints the final output to a webpage
+-> Here we can write only one statement
+-> Do not terminate the statement with semicolon(;)
+
+Example:
+--------
+	<%!
+		public static int y=100;
+		public int x=10;//------>Non-satic Variable
+		public String test(){
+			return "hello";
+		}
+		
+	%>
+	
+	<%=x %>
+	<%=y %>
+	<%=test() %>
+
+d. Directive tag
+--------------------------
+Syntax: <%@  %>
+
+a. Page directive tag
+----------------------
+-> It is used to perform imports
+
+Example 1:
+---------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.ArrayList" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	
+	<%=new Date() %>
+	
+	<% 
+	
+	ArrayList arr = new ArrayList(); 
+	
+	%>
+	
+	
+</body>
+</html>
+
+Example 2:
+----------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.Date,java.util.ArrayList,java.util.LinkedList" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<%=new Date() %>
+	
+	<% 
+		ArrayList arr = new ArrayList(); 
+		LinkedList l = new LinkedList();//-->Control + Space bar
+	%>
+</body>
+</html>
 
 
+b. include directive tag
+-----------------------------
+-> Imports content of one file into another
 
+Example 1:
+Create test1.txt in same folder as that of registration_Page.jsp
+-------------------
+Pankaj Sir Academy
+--------------------
+test1.txt
 
+Go to registration_page.jsp and add the following include directive tag
+-----------------------------------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="test1.txt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+</body>
+</html>
 
+Example 2: Develop menu.html and import its content to registration_page.jsp & list_registration.jsp
+----------------------------------------------------------------------------------
+Step 1: Develop menu.html
+-----------------------------
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<a href="">create registration</a>
+	<a href="">List registration</a>
+	<a href="">logout</a>
+</body>
+</html>
+
+Step 2: Develop and import menu.html content to registration_page.html
+---------------------------------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="menu.html" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+		<h1> Register </h1>
+</body>
+</html>
+
+Step 3: Develop and import menu.html content to list_registration.html
+---------------------------------------------------------------------
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="menu.html" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1> List Register </h1>
+</body>
+</html>
 
 
 
