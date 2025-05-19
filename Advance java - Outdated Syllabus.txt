@@ -925,5 +925,271 @@ Inter servlet Commuication
 -> Using interservlet communication we can also call from a servlet a jsp page
 -> project flow to be built based on business scenario we use ISC
 
+Example 1:
+---------
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
+@WebServlet("/first")
+public class FirstServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public FirstServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//Will Point to second Servlet
+		RequestDispatcher rd = request.getRequestDispatcher("second");
+		rd.forward(request, response);
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/second")
+public class SecondServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public SecondServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Second Servlet get method");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/second")
+public class SecondServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public SecondServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Second Servlet get method");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+
+Example 2: Call Post method of second servlet from first servlet
+------------------------------------------------------------------
+.html
+-----
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+		<form action="first" method="post">
+			<input type="submit"/>
+		</form>
+</body>
+</html>
+
+FirstServlet.java
+------------------
+package p1;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/first")
+public class FirstServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public FirstServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//Will Point to second Servlet
+		RequestDispatcher rd = request.getRequestDispatcher("second");
+		rd.forward(request, response);
+	}
+
+}
+
+SecondServlet.java
+-------------------
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/second")
+public class SecondServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public SecondServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Second Servlet post method");
+	}
+
+}
+-------------------------------------------------------------------------------------------
+Example 3: Supply data from html form to first servlet and then from first servlet supply data to second servlet using request.setAttribute()
+-----------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+		<form action="first" method="post">
+		    Name <input type="text" name="name"/>
+			<input type="submit"/>
+		</form>
+</body>
+</html>
+
+FirstServlet.java
+-------------------
+package p1;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/first")
+public class FirstServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public FirstServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//Will Point to second Servlet
+		String name = request.getParameter("name");
+		request.setAttribute("x", name);
+		
+		RequestDispatcher rd = request.getRequestDispatcher("second");
+		rd.forward(request, response);
+	}
+
+}
+
+SecondServlet.java
+--------------------
+package p1;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/second")
+public class SecondServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public SecondServlet() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String name = (String)request.getAttribute("x");
+		System.out.println(name);
+	}
+
+}
+
+Example 4:Servlet calls jsp page and also servlet supplies data to jsp implicit object request
+---------------------------------------------------------------------------------------
+First.java
+---------
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/first")
+public class First extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public First() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//rd points to jsp page
+		request.setAttribute("x", "mike");
+		
+		
+		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		rd.forward(request, response);
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+
+index.jsp
+----------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>Index page</h2>
+	<%
+		out.println((String)request.getAttribute("x"));
+	%>
+</body>
+</html>
 
