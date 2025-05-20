@@ -1193,3 +1193,97 @@ index.jsp
 </body>
 </html>
 
+##############################################
+MVC Architecture
+##############################################
+-> MVC Stands for Model, View , Controller
+-> It is a 3 layered architecture used to build application
+-> Using this architecture we divided application into following layers
+a. View - All front end code of your application we will keep that in view
+Example: html, jsp etc
+b. Model - All database operations / business logic we develop in this layer
+c. Controller - It act as mediator between view and model layer. That is it takes data from the view and gives that model and vice versa
+
+Practical Example  - To add two numbers using MVC Architecture
+a. view - add.jsp
+b. Controller - servlets - AddController.java
+c. Model (Service layer) - Java classes with logical implementation - AddService
+
+add.jsp
+--------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Add</title>
+</head>
+<body>
+	<h2>Add Numbers</h2>
+	<form action="add" method="post">
+		Number 1: <input type="text" name="num1"/>
+		Number 2: <input type="text" name="num2"/>
+		<input type="submit" value="add"/>
+	</form>
+	
+	<%
+	
+		if(request.getAttribute("result")!=null){
+			out.println(request.getAttribute("result"));
+		}
+	%>
+</body>
+</html>
+
+AddController.java
+-------------------
+package com.web_app_3.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import com.web_app_3.model.AddService;
+
+@WebServlet("/add")
+public class AddController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public AddController() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int num1 = Integer.parseInt(request.getParameter("num1"));
+		int num2 = Integer.parseInt(request.getParameter("num2"));
+		AddService add = new AddService();
+		int result = add.addNumbers(num1, num2);
+		request.setAttribute("result", result);
+		RequestDispatcher rd = request.getRequestDispatcher("add.jsp");
+		rd.forward(request, response);
+	}
+}
+
+AddService.java
+----------------
+package com.web_app_3.model;
+
+public class AddService {
+	
+	public int addNumbers(int num1, int num2) {
+		return num1+num2;
+	}
+
+}
+
+
+
+
+
+
+
+
