@@ -1280,6 +1280,153 @@ public class AddService {
 
 }
 
+##################################
+Project - EMS - Iteration 1
+###################################
+
+Write SQL Query to create users
+----------------------------------
+create database emsdb
+
+use emsdb
+
+create table user
+(
+  id int primary key,
+  username varchar(45),
+  name varchar(45),
+  email varchar(128),
+  password varchar(20)
+)
+
+insert into user values(1,"mike","mike","mike@gmail.com","testing")
+insert into user values(2,"adam","adam","adam@gmail.com","testing")
+
+select * from user
+
+##################################################
+Note: If email id and password matches the return a record
+
+select * from user where email='mike@gmail.com' and password='testing'
+############################################################################
+
+Create index.jsp form - to perform login
+--------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+</head>
+<body>
+	<h2> Login here....</h2>
+	<form action="login" method="post">
+		Email <input type="text" name="email"/>
+		Password <input type="password" name="password"/>
+		<input type="submit" value="login"/>
+	</form>
+	<%
+		if(request.getAttribute("error")!=null){
+			out.println(request.getAttribute("error"));
+		}
+	%>	
+</body>
+</html>
+
+LoginController.java
+-----------------------
+package com.ems.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import com.ems.model.DBServiceImpl;
+@WebServlet("/login")
+public class LoginController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public LoginController() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		
+		DBServiceImpl service = new DBServiceImpl();
+		service.connectDB();
+		boolean status = service.verifyLogin(email, password);
+		if(status) {
+			
+		}else {
+			//Error Message
+			request.setAttribute("error", "Invalid email/password");
+			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+			rd.forward(request, response);
+		}
+	}
+
+}
+
+DBService.java
+-----------------
+package com.ems.model;
+
+public interface DBService {
+	public void connectDB();//->Connecting to database
+	public boolean verifyLogin(String email, String password);
+}
+
+DBServiceImpl.java
+------------------
+package com.ems.model;
+import java.sql.*;
+public class DBServiceImpl implements DBService {
+	
+	private Connection con;
+	private Statement stmnt;
+	
+
+	@Override
+	public void connectDB() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/emsdb","root","test");
+			stmnt = con.createStatement();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean verifyLogin(String email, String password) {
+		try {
+		 ResultSet result = stmnt.executeQuery("select * from user where email='"+email+"' and password='"+password+"'");
+		 return result.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+}
+
+##################################
+Project - EMS - Iteration 2
+###################################
+
+
+
+
+
 
 
 
