@@ -1423,10 +1423,144 @@ public class DBServiceImpl implements DBService {
 Project - EMS - Iteration 2
 ###################################
 
+Note: 
+-> If we develop .html/.jsp page inside webapp then they are accessed publicly.
+-> Those pages that are kept inside webapp/WEB-INF can be accessed only by servlets
+-> Session Variable: Once we store data inside a session variable then  that data can be accessed across the application
+Example: user profile, logout etc
+
+Create registration table
+-------------------------
+create database emsdb
+
+use emsdb
+
+create table user
+(
+  id int primary key,
+  username varchar(45),
+  name varchar(45),
+  email varchar(128),
+  password varchar(20),
+ 
+)
+
+insert into user values(2,"mike","mike","mike@gmail.com","testing")
+
+select * from user where email='mike@gmail.com' and password='testing'
+
+create table registration
+(
+id int auto_increment primary key,
+name varchar(45),
+course varchar(60),
+email varchar(145),
+mobile varchar(10),
+ user_id int
+)
 
 
+Create registration.jsp page inside webapp/WEB-INF/views
+-----------------------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+</head>
+<body>
+	<h2> Login here....</h2>
+	<form action="login" method="post">
+		Email <input type="text" name="email"/>
+		Password <input type="password" name="password"/>
+		<input type="submit" value="login"/>
+	</form>
+	<%
+		if(request.getAttribute("error")!=null){
+			out.println(request.getAttribute("error"));
+		}
+	%>	
+</body>
+</html>
 
+Modify LogonController.java - Add Session variable concetp and load .jsp page present inside WEB-INF/views
+-------------------------------------------------------------------------------------------
+package com.ems.controller;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+
+import com.ems.model.DBServiceImpl;
+@WebServlet("/login")
+public class LoginController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public LoginController() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		
+		DBServiceImpl service = new DBServiceImpl();
+		service.connectDB();
+		boolean status = service.verifyLogin(email, password);
+		if(status) {
+			HttpSession session = request.getSession(true);
+			session.setAttribute("email",email);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/registration.jsp");
+			rd.forward(request, response);
+		}else {
+			//Error Message
+			request.setAttribute("error", "Invalid email/password");
+			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+			rd.forward(request, response);
+		}
+	}
+
+}
+
+Create RegistrationController.java - Here Access Session variable
+----------------------------------------------------------------------
+package com.ems.controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+
+@WebServlet("/registrationController")
+public class RegistrationController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public RegistrationController() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		String email = (String)session.getAttribute("email");
+	}
+
+}
+
+############################
+Project - ems - Iteration 3
+############################
 
 
 
