@@ -1716,8 +1716,314 @@ public class DBServiceImpl implements DBService {
 
 
 ################################
-Project - ems - Iteration 4
+Project - ems - Iteration 4 - Login and get data based on user login
 ###############################
+package com.ems.model;
+
+import java.sql.ResultSet;
+
+public interface DBService {
+	public void connectDB();//->Connecting to database
+	public boolean verifyLogin(String email, String password);
+	public ResultSet getUserByEmail(String email);
+	public void createRegistration(String name, String course, String emailId, String mobile, int userId);
+	public ResultSet getRegistrationsByUser(int userId);
+
+}
+
+DBService.java
+----------------
+
+package com.ems.model;
+import java.sql.*;
+public class DBServiceImpl implements DBService {
+	
+	private Connection con;
+	private Statement stmnt;
+	
+
+	@Override
+	public void connectDB() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/emsdb","root","test");
+			stmnt = con.createStatement();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean verifyLogin(String email, String password) {
+		try {
+		 ResultSet result = stmnt.executeQuery("select * from user where email='"+email+"' and password='"+password+"'");
+		 return result.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public ResultSet getUserByEmail(String email) {
+		try {
+			 ResultSet result = stmnt.executeQuery("select * from user where email='"+email+"'");
+			 
+			 return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+	}
+
+	public void createRegistration(String name, String course, String emailId, String mobile, int userId) {
+		try {
+			stmnt.executeUpdate("INSERT INTO registration (name, course, email, mobile, user_id) VALUES ('"+name+"', '"+course+"', '"+emailId+"', '"+mobile+"', '"+userId+"')");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+
+	@Override
+	public ResultSet getRegistrationsByUser(int userId) {
+		try {
+			 ResultSet result = stmnt.executeQuery("select * from registration where user_id='"+userId+"'");
+			 
+			 return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+	}
+
+}
+
+DBServiceImpl.java
+------------------
+
+package com.ems.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.sql.ResultSet;
+
+import com.ems.model.DBServiceImpl;
+
+@WebServlet("/readRegistration")
+public class ReadRegistration extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public ReadRegistration() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			HttpSession session = request.getSession(false);
+			String email = (String)session.getAttribute("email");
+			
+			DBServiceImpl service = new DBServiceImpl();
+			service.connectDB();
+			ResultSet result = service.getUserByEmail(email);
+			
+			int userId = 0;
+			if(result.next()) {
+				userId = result.getInt(1);
+			}
+			
+			ResultSet registrations = service.getRegistrationsByUser(userId);
+			request.setAttribute("registrations", registrations);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/list_registrations.jsp");
+			rd.forward(request, response);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+
+ReadRegistration.java
+-----------------------
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<a href="registrationController">Create registration</a>
+	<a href="readRegistration">List registration</a>
+</body>
+</html>
+
+menu.jsp
+--------
+
+package com.ems.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.sql.ResultSet;
+
+import com.ems.model.DBServiceImpl;
+
+@WebServlet("/registrationController")
+public class RegistrationController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public RegistrationController() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/registration.jsp");
+		rd.forward(request, response);
+	
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			HttpSession session = request.getSession(false);
+			String email = (String)session.getAttribute("email");
+			
+			DBServiceImpl service = new DBServiceImpl();
+			service.connectDB();
+			ResultSet result = service.getUserByEmail(email);
+			int userId = 0;
+			if(result.next()) {
+				userId = result.getInt(1);
+			}
+			String name = request.getParameter("name");
+			String course = request.getParameter("course");
+			String emailId = request.getParameter("email");
+			String mobile = request.getParameter("mobile");
+			
+			service.createRegistration(name,course,emailId,mobile,userId);
+			
+			request.setAttribute("message", "Registration created");
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/registration.jsp");
+			rd.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+
+RegistrationController.java - Add code to doGet() method
+-----------------------------------------------------------
+
+
+<%@page import="java.sql.ResultSet"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="menu.jsp" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>list</title>
+</head>
+<body>
+	<table>
+		<tr>
+			<th>
+				Id
+			</th>
+			<th>
+				Name
+			</th>
+			<th>
+				Course
+			</th>
+			<th>
+				Email
+			</th>
+			<th>
+				Mobile
+			</th>
+		</tr>
+		
+		<%
+			ResultSet result =(ResultSet)request.getAttribute("registrations");
+			while(result.next()){%>
+			<tr>
+			<td>
+				<%=result.getInt(1)%>
+			</td>
+			<td>
+				<%=result.getString(2)%>
+			</td>
+			<td>
+				<%=result.getString(3)%>
+			</td>
+			<td>
+				<%=result.getString(4)%>
+			</td>
+			<td>
+				<%=result.getString(5)%>
+			</td>
+		</tr>
+			
+				
+		<%} %>	
+		
+		
+		
+	</table>
+</body>
+</html>
+
+list_registrations.jsp
+----------------------
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="menu.jsp" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>registration</title>
+</head>
+<body>
+	<h2>Register here....</h2>
+	<form action="registrationController" method="post">
+		<pre>
+			Name <input type="text" name="name"/>
+			Course <input type="text" name="course"/>
+			Email <input type="text" name="email"/>
+			Mobile <input type="text" name="mobile"/>
+			<input type="submit" value="register"/>
+		</pre>
+	</form>
+	
+	<%
+		if(request.getAttribute("message")!=null){
+			out.println(request.getAttribute("message"));
+		}
+	%>
+</body>
+</html>
+
+registration.jsp
+---------------
 
 
 
