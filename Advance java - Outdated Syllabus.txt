@@ -2244,6 +2244,279 @@ public class DBServiceImpl implements DBService {
 
 }
 
+###########################################
+Project - ebs - Iteration 6 - Update registration (Fecth value and display in form to edit data)
+###########################################
+
+Update list_registrations.jsp
+-----------------------------
+<%@page import="java.sql.ResultSet"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="menu.jsp" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>list</title>
+</head>
+<body>
+	<table>
+		<tr>
+			<th>
+				Id
+			</th>
+			<th>
+				Name
+			</th>
+			<th>
+				Course
+			</th>
+			<th>
+				Email
+			</th>
+			<th>
+				Mobile
+			</th>
+			<th>
+				Delete
+			</th>
+			<th>
+				update
+			</th>
+		</tr>
+		
+		<%
+			ResultSet result =(ResultSet)request.getAttribute("registrations");
+			while(result.next()){%>
+			<tr>
+			<td>
+				<%=result.getInt(1)%>
+			</td>
+			<td>
+				<%=result.getString(2)%>
+			</td>
+			<td>
+				<%=result.getString(3)%>
+			</td>
+			<td>
+				<%=result.getString(4)%>
+			</td>
+			<td>
+				<%=result.getString(5)%>
+			</td>
+			<td>
+				<a href="deleteReg?email=<%=result.getString(4)%>">delete</a>
+			</td>
+			<td>
+				<a href="updateReg?id=<%=result.getString(1)%>">update</a>
+			</td>
+		</tr>
+			
+				
+		<%} %>	
+		
+		
+		
+	</table>
+</body>
+</html>
+
+Create UpdateController.java
+------------------------------
+package com.ems.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.ResultSet;
+
+import com.ems.model.DBServiceImpl;
+
+@WebServlet("/updateReg")
+public class UpdateRegistrationController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    public UpdateRegistrationController() {
+        super();
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			try {
+				int id = Integer.parseInt(request.getParameter("id"));
+				DBServiceImpl service = new DBServiceImpl();
+				service.connectDB();
+				ResultSet result = service.getRegistrationById(id);
+				int registrationId=0;
+				String name=null;
+				String course=null;
+				String email=null;
+				String mobile=null;
+				if(result.next()) {
+					registrationId = result.getInt(1);
+					name = result.getString(2);
+					course = result.getString(3);
+					email = result.getString(4);
+					mobile = result.getString(5);
+				}
+				
+				request.setAttribute("id", registrationId);
+				request.setAttribute("name", name);
+				request.setAttribute("course", course);
+				request.setAttribute("email", email);
+				request.setAttribute("mobile", mobile);
+				
+				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/update_registration.jsp");
+				rd.forward(request, response);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+
+DBService.java
+---------------
+package com.ems.model;
+
+import java.sql.ResultSet;
+
+public interface DBService {
+	public void connectDB();//->Connecting to database
+	public boolean verifyLogin(String email, String password);
+	public ResultSet getUserByEmail(String email);
+	public void createRegistration(String name, String course, String emailId, String mobile, int userId);
+	public ResultSet getRegistrationsByUser(int userId);
+	public void deleteRegistration(String email);
+	public ResultSet getRegistrationById(int id);
+
+}
+
+DBServiceImpl.java
+------------------
+package com.ems.model;
+import java.sql.*;
+public class DBServiceImpl implements DBService {
+	
+	private Connection con;
+	private Statement stmnt;
+	
+
+	@Override
+	public void connectDB() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/emsdb","root","test");
+			stmnt = con.createStatement();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean verifyLogin(String email, String password) {
+		try {
+		 ResultSet result = stmnt.executeQuery("select * from user where email='"+email+"' and password='"+password+"'");
+		 return result.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public ResultSet getUserByEmail(String email) {
+		try {
+			 ResultSet result = stmnt.executeQuery("select * from user where email='"+email+"'");
+			 
+			 return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+	}
+
+	public void createRegistration(String name, String course, String emailId, String mobile, int userId) {
+		try {
+			stmnt.executeUpdate("INSERT INTO registration (name, course, email, mobile, user_id) VALUES ('"+name+"', '"+course+"', '"+emailId+"', '"+mobile+"', '"+userId+"')");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+
+	@Override
+	public ResultSet getRegistrationsByUser(int userId) {
+		try {
+			 ResultSet result = stmnt.executeQuery("select * from registration where user_id='"+userId+"'");
+			 
+			 return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+	}
+
+	public void deleteRegistration(String email) {
+		try {
+			stmnt.executeUpdate("Delete from registration where email='"+email+"'");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+
+	@Override
+	public ResultSet getRegistrationById(int id) {
+		try {
+			ResultSet result = stmnt.executeQuery("select * from registration where id='"+id+"'");
+			return result;	
+		} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+
+}
+
+
+Create Update_registration.jsp
+-----------------------------------]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="menu.jsp" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Update registration</title>
+</head>
+<body>
+	<h2>Update Registration here....</h2>
+	<form action="" method="post">
+		<pre>
+			<input type="hidden" name="id" value="<%=request.getAttribute("id")%>" readonly/> 
+			Name <input type="text" name="name" value="<%=request.getAttribute("name")%>"/>
+			Course <input type="text" name="course" value="<%=request.getAttribute("course")%>"/>
+			Email <input type="text" name="email" value="<%=request.getAttribute("email")%>"/>
+			Mobile <input type="text" name="mobile" value="<%=request.getAttribute("mobile")%>"/>
+			<input type="submit" value="update"/>
+		</pre>
+	</form>
+	
+	<%
+		if(request.getAttribute("message")!=null){
+			out.println(request.getAttribute("message"));
+		}
+	%>
+</body>
+</html>
+
 
 
 
