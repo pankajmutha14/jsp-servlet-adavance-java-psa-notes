@@ -2922,11 +2922,53 @@ public class RegistrationController extends HttpServlet {
 
 }
 
+#############################
+Servlet Life Cycle
+#############################
+-> When we start tomcat, servlet is loaded into tomcat container.
+-> The first method of servlet will execute is init() method. This method will execute only once
+-> Service method(doGet, doPost) these can execute any number of times
+-> When destroy method of the servlet executes, that means servlet life cycle has come to an end
+
+#######################################
+Difference between doGet and doPost method
+#######################################
+
+1. Post method
+--------------
+-> Use post method to submit data to backend
+-> Post will not expose data submited in the url
+-> When we refresh page we get alert box to avoid duplicate transaction
+
+2. Get Method
+--------------
+-> Use to read data from backend
+-> Data is exposed in url when we submit that data to backend
+-> When we refresh page we will not get alert box to avoid duplicate transaction
 
 
+#######################################################
+Difference between application server versus web server
+#######################################################
 
+1. Application server
+----------------------
+-> Used to build dynamic application using technology like JSP, Servlets, Hibernate, Spring boot etc
+-> Examples of Application Server - Tomcat, JBoss, Glassfish
 
+2. Web Server
+---------------
+-> Used to build static application
+-> Example: Httpd, NGINX
 
+###############################
+JSP Life Cycle
+#############################
+
+-> Java code that we write inside JSP will be translated to "servlet" using JSP Translator
+-> The first method of servlet will execute is init() method. This method will execute only once
+-> Service method(doGet, doPost) these can execute any number of times
+-> When destroy method of the servlet executes, that means servlet life cycle has come to an end
 
 
 
