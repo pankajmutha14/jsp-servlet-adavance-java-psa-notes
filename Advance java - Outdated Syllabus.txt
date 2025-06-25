@@ -884,7 +884,7 @@ Step 1: Develop menu.html
 </body>
 </html>
 
-Step 2: Develop and import menu.html content to registration_page.html
+Step 2: Develop and import menu.html content to registration_page.jsp
 ---------------------------------------------------------------------
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -900,7 +900,7 @@ Step 2: Develop and import menu.html content to registration_page.html
 </body>
 </html>
 
-Step 3: Develop and import menu.html content to list_registration.html
+Step 3: Develop and import menu.html content to list_registration.jsp
 ---------------------------------------------------------------------
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
