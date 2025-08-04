@@ -730,6 +730,7 @@ Note: We cannot write html code inside scriptlet tag
 -> To create methods we use declaration tag
 -> We donot have implicit objects inside declaration (out, request, response, session etc)
 -> We cannot wite html code inside declaration tag
+-> We can use access specifier inside declaration tag
 
 
 Example 1:
@@ -2969,6 +2970,7 @@ JSP Life Cycle
 -> The first method of servlet will execute is init() method. This method will execute only once
 -> Service method(doGet, doPost) these can execute any number of times
 -> When destroy method of the servlet executes, that means servlet life cycle has come to an end
+
 
 
 
