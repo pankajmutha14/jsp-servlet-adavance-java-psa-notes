@@ -1553,8 +1553,21 @@ public class RegistrationController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(false);
-		String email = (String)session.getAttribute("email");
+		LoginServiceImpl log2=new LoginServiceImpl();
+		log2.connectDb();
+		HttpSession session=request.getSession(false);
+		String email=session.getAttribute("email").toString();
+		ResultSet result= log2.getUserByEmail(email);
+		try {
+			// Moves the cursor to the first row (fixes Before start of result set at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException)
+			if (result.next()) {  
+		        System.out.println(result.getString(1));
+		        System.out.println(result.getString(2));
+		        System.out.println(result.getString(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
